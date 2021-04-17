@@ -111,8 +111,8 @@ source "qemu" "qemu" {
   boot_command = [
     "S<enter><wait>",
     "dhclient em0<enter><wait>",
-    "ftp -o install.conf http://{{ .HTTPIP }}:{{ .HTTPPort }}/install.conf<enter><wait>",
-    "ftp -o install.sh http://{{ .HTTPIP }}:{{ .HTTPPort }}/install.sh<enter><wait>",
+    "ftp -o install.conf http://{{ .HTTPIP }}:{{ .HTTPPort }}/resources/install.conf<enter><wait>",
+    "ftp -o install.sh http://{{ .HTTPIP }}:{{ .HTTPPort }}/resources/install.sh<enter><wait>",
     "SECONDARY_USER_USERNAME=${var.secondary_user_username} ",
     "SECONDARY_USER_PASSWORD=${var.secondary_user_password} ",
     "ROOT_PASSWORD=${var.root_password} ",
