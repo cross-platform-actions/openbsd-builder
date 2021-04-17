@@ -89,6 +89,7 @@ locals {
   iso_target_extension = "img"
   iso_target_path = "packer_cache"
   iso_full_target_path = "${local.iso_target_path}/${sha1(var.checksum)}.${local.iso_target_extension}"
+  qemu_architecture = var.architecture == "arm64" ? "aarch64" : var.architecture
 }
 
 source "qemu" "qemu" {
@@ -105,6 +106,7 @@ source "qemu" "qemu" {
   use_default_display = var.use_default_display
   display = var.display
   accelerator = var.accelerator
+  qemu_binary = "qemu-system-${var.qemu_architecture}"
 
   boot_wait = "30s"
 
