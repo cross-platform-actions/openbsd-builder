@@ -3,8 +3,8 @@ variable "os_version" {
   description = "The version of the operating system to download and install"
 }
 
-variable "cpu" {
-  default = "amd64"
+variable "architecture" {
+  default = "x86-64"
   type = string
   description = "The type of CPU to use when building"
 }
@@ -83,8 +83,9 @@ variable "sudo_version" {
 }
 
 locals {
+  image_architecture = var.architecture == "x86-64" ? "amd64" : var.architecture
   image = "miniroot${replace(var.os_version, ".", "")}.img"
-  vm_name = "openbsd-${var.os_version}-${var.cpu}.qcow2"
+  vm_name = "openbsd-${var.os_version}-${var.architecture}.qcow2"
   iso_target_extension = "img"
   iso_target_path = "packer_cache"
   iso_full_target_path = "${local.iso_target_path}/${sha1(var.checksum)}.${local.iso_target_extension}"
@@ -135,7 +136,7 @@ source "qemu" "qemu" {
   iso_target_extension = local.iso_target_extension
   iso_target_path = local.iso_target_path
   iso_urls = [
-    "http://cdn.openbsd.org/pub/OpenBSD/${var.os_version}/${var.cpu}/${local.image}"
+    "http://cdn.openbsd.org/pub/OpenBSD/${var.os_version}/${local.image_architecture}/${local.image}"
   ]
 
   http_directory = "."

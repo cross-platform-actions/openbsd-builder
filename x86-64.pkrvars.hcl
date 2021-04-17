@@ -1,1 +1,1 @@
-cpu = "amd64"
+architecture = "x86-64"
