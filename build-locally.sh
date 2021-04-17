@@ -5,8 +5,8 @@ set -euo pipefail
 OS_VERSION="$1"
 ARCHITECTURE="$2"
 
-# mkdir -p "$PROJECT_ROOT_PATH/packer_cache_backup"
-# cp "$PROJECT_ROOT_PATH/packer_cache"/*.img "$PROJECT_ROOT_PATH/packer_cache_backup"
+# mkdir -p packer_cache_backup
+# cp packer_cache/*.img packer_cache_backup
 
 rm -rf packer_cache
 
