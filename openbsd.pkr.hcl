@@ -72,9 +72,9 @@ variable "accelerator" {
   description = "The accelerator type to use when running the VM"
 }
 
-variable "bios_path" {
+variable "firmware" {
   type = string
-  description = "The path to the BIOS (OVMF.fd) to use when building the VM"
+  description = "The firmware file to be used by QEMU"
 }
 
 variable "sudo_version" {
@@ -107,6 +107,7 @@ source "qemu" "qemu" {
   display = var.display
   accelerator = var.accelerator
   qemu_binary = "qemu-system-${var.qemu_architecture}"
+  firmware = var.firmware
 
   boot_wait = "30s"
 
@@ -130,8 +131,7 @@ source "qemu" "qemu" {
     ["-device", "scsi-hd,drive=drive0,bootindex=0"],
     ["-device", "scsi-hd,drive=drive1,bootindex=1"],
     ["-drive", "if=none,file={{ .OutputDir }}/{{ .Name }},id=drive0,cache=writeback,discard=ignore,format=qcow2"],
-    ["-drive", "if=none,file=${local.iso_full_target_path},id=drive1,media=disk,format=raw"],
-    ["-bios", var.bios_path]
+    ["-drive", "if=none,file=${local.iso_full_target_path},id=drive1,media=disk,format=raw"]
   ]
 
   iso_checksum = var.checksum
