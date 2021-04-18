@@ -1,0 +1,1 @@
+firmware = "resources/ovmf.fd"

@@ -153,7 +153,7 @@ source "qemu" "qemu" {
     ["-device", "scsi-hd,drive=drive0,bootindex=0"],
     ["-device", "scsi-hd,drive=drive1,bootindex=1"],
     ["-drive", "if=none,file={{ .OutputDir }}/{{ .Name }},id=drive0,cache=writeback,discard=ignore,format=qcow2"],
-    ["-drive", "if=none,file=${local.iso_full_target_path},id=drive1,media=disk,format=raw"]
+    ["-drive", "if=none,file=${local.iso_full_target_path},id=drive1,media=disk,format=raw"],
   ], var.qemu_extra_args)
 
   iso_checksum = var.checksum
