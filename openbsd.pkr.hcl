@@ -16,7 +16,7 @@ variable "machine_type" {
 }
 
 variable "cpu_type" {
-  default = "qemu64-v1"
+  default = "qemu64"
   type = string
   description = "The type of CPU to use when building"
 }
