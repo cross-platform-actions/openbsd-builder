@@ -89,12 +89,6 @@ variable "firmware" {
   description = "The firmware file to be used by QEMU"
 }
 
-variable "qemu_extra_args" {
-  type = list(list(string))
-  default = []
-  description = "Extra arguments that will be passed to QEMU. Will be appended to the default arguments"
-}
-
 variable "sudo_version" {
   type = string
   description = "The version of sudo to install"
@@ -147,14 +141,16 @@ source "qemu" "qemu" {
   ssh_password = var.root_password
   ssh_timeout = "10000s"
 
-  qemuargs = concat([
+  qemuargs = [
     ["-cpu", var.cpu_type],
+    ["-boot", "strict=off"],
+    ["-monitor", "none"],
     ["-device", "virtio-scsi-pci"],
     ["-device", "scsi-hd,drive=drive0,bootindex=0"],
     ["-device", "scsi-hd,drive=drive1,bootindex=1"],
     ["-drive", "if=none,file={{ .OutputDir }}/{{ .Name }},id=drive0,cache=writeback,discard=ignore,format=qcow2"],
     ["-drive", "if=none,file=${local.iso_full_target_path},id=drive1,media=disk,format=raw"],
-  ], var.qemu_extra_args)
+  ]
 
   iso_checksum = var.checksum
   iso_target_extension = local.iso_target_extension
