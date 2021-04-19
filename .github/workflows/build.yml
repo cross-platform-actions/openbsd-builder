@@ -47,6 +47,7 @@ jobs:
             -var-file "var_files/common.pkrvars.hcl" \
             -var-file "var_files/github.pkrvars.hcl" \
             -var-file "var_files/${{ matrix.architecture }}.pkrvars.hcl" \
+            -var-file "var_files/${{ matrix.architecture }}-github.pkrvars.hcl" \
             -var-file "var_files/${{ matrix.version }}/common.pkrvars.hcl" \
             -var-file "var_files/${{ matrix.version }}/${{ matrix.architecture }}.pkrvars.hcl" \
             openbsd.pkr.hcl
