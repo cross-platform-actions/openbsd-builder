@@ -30,7 +30,7 @@ jobs:
       - name: Install Dependecies
         run: |
           echo "'$QEMU_ARCHITECTURE'"
-          sudo apt install qemu-system-x86 -y
+          # sudo apt install qemu-system-x86 -y
         # run: sudo apt install "qemu-system-$QEMU_ARCHITECTURE" -y
         env:
           QEMU_ARCHITECTURE: |
