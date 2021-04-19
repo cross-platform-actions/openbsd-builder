@@ -12,6 +12,15 @@ jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
+    strategy:
+        matrix:
+          version:
+            - 6.8
+
+          architecture:
+            - x86-64
+            - arm64
+
     steps:
       - name: Clone Repository
         uses: actions/checkout@v2
@@ -29,8 +38,11 @@ jobs:
       - name: Build Image
         run: |
           PACKER_LOG=1 ./packer build \
-            -var-file 6.8/common-amd64.pkrvars.hcl \
-            -var-file 6.8/github-amd64.pkrvars.hcl \
+            -var-file "var_files/common.pkrvars.hcl" \
+            -var-file "var_files/github.pkrvars.hcl" \
+            -var-file "var_files/${{ matrix.architecture }}.pkrvars.hcl" \
+            -var-file "var_files/${{ matrix.version }}/common.pkrvars.hcl" \
+            -var-file "var_files/${{ matrix.version }}/${{ matrix.architecture }}.pkrvars.hcl" \
             openbsd.pkr.hcl
 
       - name: Extract Version
