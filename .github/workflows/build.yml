@@ -28,7 +28,14 @@ jobs:
           persist-credentials: false
 
       - name: Install Dependecies
-        run: sudo apt install qemu-system-x86 -y
+        run: sudo apt install "qemu-system-$QEMU_ARCHITECTURE" -y
+        env:
+          QEMU_ARCHITECTURE: |
+            ${{
+              matrix.architecture == 'x86-64' && 'x86' ||
+              matrix.architecture == 'arm64' && 'aarch64' ||
+              matrix.architecture
+            }}
 
       - name: Download Packer
         run: |
