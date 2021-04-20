@@ -96,5 +96,5 @@ configure_boot_scripts
 configure_ssh
 configure_flags
 
-minimize_disk
-minimize_swap
+# minimize_disk
+# minimize_swap
