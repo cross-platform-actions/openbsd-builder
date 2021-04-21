@@ -19,7 +19,7 @@ jobs:
             - 6.8
 
           architecture:
-            # - x86-64
+            - x86-64
             - arm64
 
     steps:
