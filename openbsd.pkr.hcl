@@ -126,9 +126,7 @@ source "qemu" "qemu" {
 
   boot_wait = "30s"
 
-  boot_command = [""]
-
-  /*boot_command = [
+  boot_command = [
     "S<enter><wait>",
     "dhclient em0<enter><wait>",
     "ftp -o install.conf http://{{ .HTTPIP }}:{{ .HTTPPort }}/resources/install.conf<enter><wait>",
@@ -137,7 +135,7 @@ source "qemu" "qemu" {
     "SECONDARY_USER_PASSWORD=${var.secondary_user_password} ",
     "ROOT_PASSWORD=${var.root_password} ",
     "sh install.sh && reboot<enter>"
-  ]*/
+  ]
 
   ssh_username = "root"
   ssh_password = var.root_password
