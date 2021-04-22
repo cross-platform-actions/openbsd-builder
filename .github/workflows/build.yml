@@ -37,10 +37,11 @@ jobs:
               matrix.architecture
             }}
 
-      - name: Download Packer
+      - name: Install Packer
         run: |
           curl -o packer.zip -L https://releases.hashicorp.com/packer/1.7.1/packer_1.7.1_linux_amd64.zip
           unzip packer.zip
+          mv packer /usr/local/bin
 
       - name: Copy UEFI
         if: matrix.architecture == 'x86-64'
@@ -54,14 +55,7 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
 
       - name: Build Image
-        run: |
-          PACKER_LOG=1 ./packer build \
-            -var-file "var_files/common.pkrvars.hcl" \
-            -var-file "var_files/github.pkrvars.hcl" \
-            -var-file "var_files/${{ matrix.architecture }}.pkrvars.hcl" \
-            -var-file "var_files/${{ matrix.version }}/common.pkrvars.hcl" \
-            -var-file "var_files/${{ matrix.version }}/${{ matrix.architecture }}.pkrvars.hcl" \
-            openbsd.pkr.hcl
+        run: PACKER_LOG=1 ./build.sh -var 'headless=true'
 
       - name: Extract Version
         id: version

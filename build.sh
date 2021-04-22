@@ -1,19 +1,16 @@
 #!/bin/bash
 
-set -euo pipefail
+set -euxo pipefail
 
-OS_VERSION="$1"
-ARCHITECTURE="$2"
+OS_VERSION="$1"; shift
+ARCHITECTURE="$1"; shift
 
-# mkdir -p packer_cache_backup
-# cp packer_cache/*.img packer_cache_backup
+# rm -rf packer_cache
 
-rm -rf packer_cache
-
-PACKER_LOG=1 packer build \
+packer build \
   -var-file "var_files/common.pkrvars.hcl" \
-  -var-file "var_files/local-macos.pkrvars.hcl" \
   -var-file "var_files/$ARCHITECTURE.pkrvars.hcl" \
   -var-file "var_files/$OS_VERSION/common.pkrvars.hcl" \
   -var-file "var_files/$OS_VERSION/$ARCHITECTURE.pkrvars.hcl" \
+  "$@" \
   openbsd.pkr.hcl

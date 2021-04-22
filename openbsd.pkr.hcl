@@ -74,7 +74,7 @@ variable "use_default_display" {
 }
 
 variable "display" {
-  default = "none"
+  default = "cocoa"
   description = "What QEMU -display option to use"
 }
 
