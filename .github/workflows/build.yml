@@ -55,7 +55,7 @@ jobs:
       #   uses: mxschmitt/action-tmate@v3
 
       - name: Build Image
-        run: PACKER_LOG=1 ./build.sh -var 'headless=true'
+        run: PACKER_LOG=1 ./build.sh '${{ matrix.version }}' '${{ matrix.architecture }}' -var 'headless=true'
 
       - name: Extract Version
         id: version
