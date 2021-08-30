@@ -1,3 +1,4 @@
+# trigger
 # OpenBSD Builder
 
 This project builds the OpenBSD VM image for the
