@@ -1,18 +1,10 @@
-# trigger
 # OpenBSD Builder
 
 This project builds the OpenBSD VM image for the
 [cross-platform-actions/action](https://github.com/cross-platform-actions/action)
-GitHub action. The image contains a standard OpenBSD installation without any
-X components, man pages or games. It will install the following file sets:
+GitHub action. The image contains a standard OpenBSD installation.
 
-* bsd
-* bsd.mp
-* bsd.rd
-* baseXX.tgz
-* compXX.tgz
-
-In addition to the above file sets, the following packages are installed as well:
+In addition to the OpenBSD file sets, the following packages are installed as well:
 
 * sudo
 * bash
@@ -30,6 +22,7 @@ The following architectures and versions are supported:
 | Version | x86-64 | arm64 |
 |---------|--------|-------|
 | 6.8     | ✓      | ✓     |
+| 6.9     | ✓      | ✓     |
 
 ## Building Locally
 
