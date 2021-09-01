@@ -29,6 +29,7 @@ The following architectures and versions are supported:
 | Version | x86-64 | arm64 |
 |---------|--------|-------|
 | 6.8     | ✓      | ✓     |
+| 6.9     | ✓      | ✓     |
 
 ## Building Locally
 
