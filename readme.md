@@ -10,6 +10,10 @@ X components, man pages or games. It will install the following file sets:
 * bsd.rd
 * baseXX.tgz
 * compXX.tgz
+* xbaseXX.tgz
+* xfontXX.tgz
+* xservXX.tgz
+* xshareXX.tgz
 
 In addition to the above file sets, the following packages are installed as well:
 
