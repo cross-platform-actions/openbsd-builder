@@ -3,13 +3,17 @@
 This project builds the OpenBSD VM image for the
 [cross-platform-actions/action](https://github.com/cross-platform-actions/action)
 GitHub action. The image contains a standard OpenBSD installation without any
-X components, man pages or games. It will install the following file sets:
+ man pages or games. It will install the following file sets:
 
 * bsd
 * bsd.mp
 * bsd.rd
 * baseXX.tgz
 * compXX.tgz
+* xbaseXX.tgz
+* xfontXX.tgz
+* xservXX.tgz
+* xshareXX.tgz
 
 In addition to the above file sets, the following packages are installed as well:
 
