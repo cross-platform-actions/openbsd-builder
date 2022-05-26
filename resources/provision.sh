@@ -29,7 +29,7 @@ configure_boot_scripts() {
 RESOURCES_MOUNT_PATH='/mnt/resources'
 
 mount_resources_disk() {
-  disk=\$(sysctl -n hw.disknames | sed 's/:[^,]*//g;s/,/ /' | cut -d ' ' -f 2 -s)
+  disk=\$(sysctl -n hw.disknames | sed 's/:[^,]*//g' | cut -d ',' -f 2 -s)
 
   if [ -n "\$disk" ]; then
     partition=\$(disklabel \$disk | sed -n '/^ *[abd-z]: /s/^ *\([abd-z]\):.*/\1/p')
