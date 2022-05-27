@@ -34,6 +34,7 @@ The following architectures and versions are supported:
 |---------|--------|-------|
 | 6.8     | ✓      | ✓     |
 | 6.9     | ✓      | ✓     |
+| 7.1     | ✓      | ✓     |
 
 ## Building Locally
 
