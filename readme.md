@@ -71,6 +71,14 @@ install location to `resources/ovmf.fd`.
     Where `<version>` and `<architecture>` are the any of the versions or
     architectures available in the above table.
 
+    On non-macOS platforms the `display` variable needs to be overridden by
+    specifying `-var display=gtk` or `-var display=sdl` at the end when invoking
+    the `build.sh` script:
+
+    ```
+    ./build.sh <version> <architecture> -var display=gtk
+    ```
+
 The above command will build the VM image and the resulting disk image will be
 at the path: `output/openbsd-6.8-amd64.qcow2`.
 
