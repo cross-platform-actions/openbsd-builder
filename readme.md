@@ -39,21 +39,35 @@ The following architectures and versions are supported:
 
 ### Prerequisite
 
+####  [UEFI firmware](https://github.com/tianocore/edk2)
+
+This needs to be located at `resources/ovmf.fd`. Copy the `OVMF.fd` for it's
+install location to `resources/ovmf.fd`.
+
+* **Ubuntu** - Install the [`ovmf`](https://packages.ubuntu.com/jammy/ovmf) package.
+* **Fedora** - Install the [`edk2-ovmf`](https://fedora.pkgs.org/34/fedora-x86_64/edk2-ovmf-20200801stable-4.fc34.noarch.rpm.html) package.
+* **macOS** - Copy the `OVMF.fd` file from a Linux machine
+
+#### Other
+
 * [Packer](https://www.packer.io) 1.7.1 or later
 * [QEMU](https://qemu.org)
 
 ### Building
 
 1. Clone the repository:
+
     ```
     git clone https://github.com/cross-platform-actions/openbsd-builder
     cd openbsd-builder
     ```
 
 2. Run `build.sh` to build the image:
+
     ```
     ./build.sh <version> <architecture>
     ```
+
     Where `<version>` and `<architecture>` are the any of the versions or
     architectures available in the above table.
 
