@@ -44,9 +44,11 @@ jobs:
           unzip packer.zip
           mv packer /usr/local/bin
 
-      - name: Copy UEFI
+      - name: Install UEFI
         if: matrix.architecture == 'x86-64'
-        run: cp /usr/share/ovmf/OVMF.fd resources/ovmf.fd
+        uses: docker://ubuntu:22.10
+        with:
+          args: bash -c "apt update && apt install ovmf && cp /usr/share/ovmf/OVMF.fd resources/ovmf.fd"
 
       - name: Download QEMU UEFI
         if: matrix.architecture == 'arm64'
