@@ -168,6 +168,7 @@ source "qemu" "qemu" {
     ["-cpu", var.cpu_type],
     ["-boot", "strict=off"],
     ["-monitor", "none"],
+    ["-vga", "cirrus"],
     ["-device", "virtio-scsi-pci"],
     ["-device", "scsi-hd,drive=drive0,bootindex=0"],
     ["-device", "scsi-hd,drive=drive1,bootindex=1"],
