@@ -18,6 +18,7 @@ jobs:
           version:
             - 6.8
             - 6.9
+            - 7.1
 
           architecture:
             - x86-64
