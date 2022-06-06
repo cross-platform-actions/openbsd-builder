@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     container: ubuntu:21.04
     strategy:
+        fail-fast: false
         matrix:
           version:
             - 6.8
