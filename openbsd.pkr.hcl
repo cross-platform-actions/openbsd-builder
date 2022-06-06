@@ -94,6 +94,12 @@ variable "readonly_boot_media" {
   description = "If true, the boot media will be mounted as readonly"
 }
 
+variable "dhcp_client_boot_command" {
+  default = ["dhclient em0<enter><wait>"]
+  type = list(string)
+  description = "The boot command used to configure the DHCP client"
+}
+
 variable "sudo_version" {
   type = string
   description = "The version of the sudo package to install"
@@ -140,17 +146,19 @@ source "qemu" "qemu" {
 
   boot_wait = "30s"
 
-  boot_command = [
-    "S<enter><wait>",
-    "dhclient em0<enter><wait>",
-    "ftp -o install.conf http://{{ .HTTPIP }}:{{ .HTTPPort }}/resources/install.conf<enter><wait>",
-    "ftp -o install.sh http://{{ .HTTPIP }}:{{ .HTTPPort }}/resources/install.sh<enter><wait>",
-    "SECONDARY_USER_USERNAME=${var.secondary_user_username} ",
-    "SECONDARY_USER_PASSWORD=${var.secondary_user_password} ",
-    "ROOT_PASSWORD=${var.root_password} ",
-    "DISKLABEL_TEMPLATE='http://{{ .HTTPIP }}:{{ .HTTPPort }}/resources/template.disklabel' ",
-    "sh install.sh && reboot<enter>"
-  ]
+  boot_command = concat(
+    ["S<enter><wait>"],
+    var.dhcp_client_boot_command,
+    [
+      "ftp -o install.conf http://{{ .HTTPIP }}:{{ .HTTPPort }}/resources/install.conf<enter><wait>",
+      "ftp -o install.sh http://{{ .HTTPIP }}:{{ .HTTPPort }}/resources/install.sh<enter><wait>",
+      "SECONDARY_USER_USERNAME=${var.secondary_user_username} ",
+      "SECONDARY_USER_PASSWORD=${var.secondary_user_password} ",
+      "ROOT_PASSWORD=${var.root_password} ",
+      "DISKLABEL_TEMPLATE='http://{{ .HTTPIP }}:{{ .HTTPPort }}/resources/template.disklabel' ",
+      "sh install.sh && reboot<enter>"
+    ]
+  )
 
   ssh_username = "root"
   ssh_password = var.root_password
