@@ -169,9 +169,8 @@ source "qemu" "qemu" {
     ["-boot", "strict=off"],
     ["-monitor", "none"],
     ["-vga", "cirrus"],
-    ["-device", "virtio-scsi-pci"],
-    ["-device", "scsi-hd,drive=drive0,bootindex=0"],
-    ["-device", "scsi-hd,drive=drive1,bootindex=1"],
+    ["-device", "virtio-blk-pci,drive=drive0,bootindex=0"],
+    ["-device", "virtio-blk-pci,drive=drive1,bootindex=1"],
     ["-drive", "if=none,file={{ .OutputDir }}/{{ .Name }},id=drive0,cache=writeback,discard=ignore,format=qcow2"],
     ["-drive", "if=none,file=${local.iso_full_target_path},id=drive1,media=disk,format=raw,readonly=${local.readonly_boot_media}"],
   ]
