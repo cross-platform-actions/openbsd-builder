@@ -39,6 +39,18 @@ variable "disk_size" {
   description = "The size in bytes of the hard disk of the VM"
 }
 
+variable "net_device" {
+  default = "virtio-net"
+  type = string
+  description = "The driver to use for the network interface"
+}
+
+variable "network_interface" {
+  default = "vio0"
+  type = string
+  description = "The network interface as it's named in OpenBSD"
+}
+
 variable "checksum" {
   type = string
   description = "The checksum for the virtual hard drive file"
@@ -124,7 +136,7 @@ source "qemu" "qemu" {
   machine_type = var.machine_type
   cpus = var.cpus
   memory = var.memory
-  net_device = "e1000"
+  net_device = var.net_device
 
   disk_compression = true
   disk_interface = "virtio"
@@ -142,7 +154,7 @@ source "qemu" "qemu" {
 
   boot_command = [
     "S<enter><wait>",
-    "ifconfig em0 10.0.2.15 255.255.255.0<enter><wait>",
+    "ifconfig ${var.network_interface} 10.0.2.15 255.255.255.0<enter><wait>",
     "ftp -o install.conf http://{{ .HTTPIP }}:{{ .HTTPPort }}/resources/install.conf<enter><wait>",
     "ftp -o install.sh http://{{ .HTTPIP }}:{{ .HTTPPort }}/resources/install.sh<enter><wait>",
     "SECONDARY_USER_USERNAME=${var.secondary_user_username} ",
