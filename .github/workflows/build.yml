@@ -17,14 +17,15 @@ jobs:
         fail-fast: false
         matrix:
           version:
+            - snapshots
             - 6.8
             - 6.9
             - 7.1
 
+
           architecture:
             - x86-64
             - arm64
-
     steps:
       - name: Clone Repository
         uses: actions/checkout@v2
@@ -32,13 +33,26 @@ jobs:
           persist-credentials: false
 
       - name: Install Dependecies
-        run: apt update && apt install curl unzip "qemu-system-$QEMU_ARCHITECTURE" -y
+        run: apt update && apt install curl unzip "qemu-system-${QEMU_ARCHITECTURE}" -y
         env:
           QEMU_ARCHITECTURE: ${{
               matrix.architecture == 'x86-64' && 'x86' ||
               matrix.architecture == 'arm64' && 'aarch64' ||
               matrix.architecture
             }}
+
+      - name: Find snapshot variables
+        if: ${{ matrix.version == 'snapshots' }}
+        run: |
+          bash create_vars.sh ${OBSD_ARCH} ${LOCAL_ARCH}
+          echo "SNAP_SUM=$(cat checksum)" >> ${GITHUB_ENV}
+        env:
+          OBSD_ARCH: ${{
+              matrix.architecture == 'x86-64' && 'amd64' ||
+              matrix.architecture == 'arm64' && 'arm64' ||
+              matrix.architecture
+            }}
+          LOCAL_ARCH: ${{ matrix.architecture }}
 
       - name: Install Packer
         run: |

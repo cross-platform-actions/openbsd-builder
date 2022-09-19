@@ -5,6 +5,7 @@ set -exu
 sed -i'' "s/{{ SECONDARY_USER_USERNAME }}/$SECONDARY_USER_USERNAME/" /install.conf
 sed -i'' "s/{{ SECONDARY_USER_PASSWORD }}/$SECONDARY_USER_PASSWORD/" /install.conf
 sed -i'' "s/{{ ROOT_PASSWORD }}/$ROOT_PASSWORD/" /install.conf
+sed -i'' "s:{{ SERVER_DIRECTORY }}:$SERVER_DIRECTORY:" /install.conf
 
 # Use # instead of / because the URL to the templates contains /
 sed -i'' "s#{{ DISKLABEL_TEMPLATE }}#$DISKLABEL_TEMPLATE#" /install.conf

@@ -3,6 +3,11 @@ variable "os_version" {
   description = "The version of the operating system to download and install"
 }
 
+variable "os_number" {
+  type = string
+  description = "The version suffix for minirootXX.img from upstream"
+}
+
 variable "architecture" {
   default = "x86-64"
   type = string
@@ -31,6 +36,11 @@ variable "cpus" {
   default = 2
   type = number
   description = "The number of cpus to use when building the VM"
+}
+
+variable "vnc_bind_address" {
+  default = "127.0.0.1"
+  type = string
 }
 
 variable "disk_size" {
@@ -118,7 +128,7 @@ variable "rsync_version" {
 
 locals {
   image_architecture = var.architecture == "x86-64" ? "amd64" : var.architecture
-  image = "miniroot${replace(var.os_version, ".", "")}.img"
+  image = "miniroot${var.os_number}.img"
   vm_name = "openbsd-${var.os_version}-${var.architecture}.qcow2"
 
   iso_target_extension = "img"
@@ -128,6 +138,8 @@ locals {
   qemu_architecture = var.architecture == "arm64" ? "aarch64" : (
     var.architecture == "x86-64" ? "x86_64" : var.architecture
   )
+
+  obsd_architecture = var.architecture == "x86-64" ? "amd64" : "arm64"
 
   readonly_boot_media = var.readonly_boot_media ? "on" : "off"
 }
@@ -150,6 +162,8 @@ source "qemu" "qemu" {
   qemu_binary = "qemu-system-${local.qemu_architecture}"
   firmware = var.firmware
 
+  vnc_bind_address = var.vnc_bind_address
+
   boot_wait = "30s"
 
   boot_command = [
@@ -160,6 +174,7 @@ source "qemu" "qemu" {
     "SECONDARY_USER_USERNAME=${var.secondary_user_username} ",
     "SECONDARY_USER_PASSWORD=${var.secondary_user_password} ",
     "ROOT_PASSWORD=${var.root_password} ",
+    "SERVER_DIRECTORY=pub/OpenBSD/${var.os_version}/${local.obsd_architecture} ",
     "DISKLABEL_TEMPLATE='http://{{ .HTTPIP }}:{{ .HTTPPort }}/resources/template.disklabel' ",
     "sh install.sh && reboot<enter>"
   ]
@@ -198,6 +213,7 @@ build {
   provisioner "shell" {
     script = "resources/provision.sh"
     environment_vars = [
+      "OS_VERSION=${var.os_version}",
       "SECONDARY_USER=${var.secondary_user_username}",
       "SUDO_VERSION=${var.sudo_version}",
       "RSYNC_VERSION=${var.rsync_version}"
