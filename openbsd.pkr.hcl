@@ -106,16 +106,6 @@ variable "readonly_boot_media" {
   description = "If true, the boot media will be mounted as readonly"
 }
 
-variable "sudo_version" {
-  type = string
-  description = "The version of the sudo package to install"
-}
-
-variable "rsync_version" {
-  type = string
-  description = "The version of the rsync package to install"
-}
-
 locals {
   image_architecture = var.architecture == "x86-64" ? "amd64" : var.architecture
   image = "miniroot${replace(var.os_version, ".", "")}.img"
@@ -199,8 +189,6 @@ build {
     script = "resources/provision.sh"
     environment_vars = [
       "SECONDARY_USER=${var.secondary_user_username}",
-      "SUDO_VERSION=${var.sudo_version}",
-      "RSYNC_VERSION=${var.rsync_version}"
     ]
   }
 

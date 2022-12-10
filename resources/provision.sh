@@ -5,11 +5,11 @@ set -exu
 install_extra_packages() {
   pkg_add bash
   pkg_add curl
-  pkg_add "rsync-$RSYNC_VERSION"
+  pkg_add rsync--
 }
 
 setup_sudo() {
-  pkg_add "sudo-$SUDO_VERSION"
+  pkg_add sudo--
 
   cat <<EOF > /etc/sudoers
 #includedir /etc/sudoers.d
