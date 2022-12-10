@@ -109,6 +109,7 @@ variable "readonly_boot_media" {
 locals {
   image_architecture = var.architecture == "x86-64" ? "amd64" : var.architecture
   image = "miniroot${replace(var.os_version, ".", "")}.img"
+  image_full_remote_path = "${var.os_version}/${local.image_architecture}/${local.image}"
   vm_name = "openbsd-${var.os_version}-${var.architecture}.qcow2"
 
   iso_target_extension = "img"
@@ -173,7 +174,8 @@ source "qemu" "qemu" {
   iso_target_extension = local.iso_target_extension
   iso_target_path = local.iso_target_path
   iso_urls = [
-    "http://cdn.openbsd.org/pub/OpenBSD/${var.os_version}/${local.image_architecture}/${local.image}"
+    "https://cdn.openbsd.org/pub/OpenBSD/${local.image_full_remote_path}",
+    "https://mirror.fra10.de.leaseweb.net/pub/OpenBSD/${local.image_full_remote_path}"
   ]
 
   http_directory = "."
