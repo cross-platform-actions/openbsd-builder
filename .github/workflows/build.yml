@@ -29,11 +29,11 @@ jobs:
 
     steps:
       - name: Clone Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           persist-credentials: false
 
-      - name: Install Dependecies
+      - name: Install Dependencies
         run: apt update && apt install curl unzip "qemu-system-$QEMU_ARCHITECTURE" -y
         env:
           QEMU_ARCHITECTURE: ${{
@@ -42,11 +42,9 @@ jobs:
               matrix.architecture
             }}
 
-      - name: Install Packer
-        run: |
-          curl -o packer.zip -L https://releases.hashicorp.com/packer/1.7.1/packer_1.7.1_linux_amd64.zip
-          unzip packer.zip
-          mv packer /usr/local/bin
+      - uses: hashicorp/setup-packer@main
+        with:
+          version: "1.7.1"
 
       - name: Install UEFI
         if: matrix.architecture == 'x86-64'
@@ -57,7 +55,7 @@ jobs:
 
       - name: Download QEMU UEFI
         if: matrix.architecture == 'arm64'
-        run: curl -o resources/qemu_efi.fd -L http://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd
+        run: curl -o resources/qemu_efi.fd -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
