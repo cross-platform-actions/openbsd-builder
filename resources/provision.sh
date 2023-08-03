@@ -88,19 +88,6 @@ setup_work_directory() {
   chown "$permissions" "$work_directory"
 }
 
-minimize_disk() {
-  for dir in $(mount | awk '{ print $3 }'); do
-    dd if=/dev/zero of="$dir/EMPTY" bs=1M || :
-    rm "$dir/EMPTY"
-  done
-}
-
-minimize_swap() {
-  swap_device=$(swapctl -l | awk '!/^Device/ { print $1 }')
-  swapctl -d "$swap_device"
-  dd if=/dev/zero of="$swap_device" bs=1M || :
-}
-
 install_extra_packages
 setup_sudo
 configure_boot_flags
@@ -108,6 +95,3 @@ configure_boot_scripts
 configure_ssh
 configure_flags
 setup_work_directory
-
-minimize_disk
-minimize_swap

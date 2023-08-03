@@ -194,7 +194,14 @@ build {
     ]
   }
 
-  /*provisioner "shell-local" {
-    inline = ["if [ -d packer_cache_backup ]; then cp packer_cache_backup/* ${local.iso_target_path}; fi"]
-  }*/
+  provisioner "shell" {
+    script = "resources/custom.sh"
+    environment_vars = [
+      "SECONDARY_USER=${var.secondary_user_username}",
+    ]
+  }
+
+  provisioner "shell" {
+    script = "resources/cleanup.sh"
+  }
 }
