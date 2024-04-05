@@ -137,7 +137,7 @@ source "qemu" "qemu" {
   headless = var.headless
   use_default_display = var.use_default_display
   display = var.display
-  accelerator = var.accelerator
+  accelerator = "none"
   qemu_binary = "qemu-system-${local.qemu_architecture}"
   firmware = var.firmware
 
@@ -162,6 +162,9 @@ source "qemu" "qemu" {
   qemuargs = [
     ["-cpu", var.cpu_type],
     ["-boot", "strict=off"],
+    ["-accel", "hvf"],
+    ["-accel", "kvm"],
+    ["-accel", "tcg"],
     ["-monitor", "none"],
     ["-vga", "cirrus"],
     ["-device", "virtio-blk-pci,drive=drive0,bootindex=0"],
