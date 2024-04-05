@@ -5,8 +5,6 @@ set -euxo pipefail
 OS_VERSION="$1"; shift
 ARCHITECTURE="$1"; shift
 
-# rm -rf packer_cache
-
 packer build \
   -var os_version="$OS_VERSION" \
   -var-file "var_files/common.pkrvars.hcl" \
