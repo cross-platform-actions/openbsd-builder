@@ -111,7 +111,7 @@ locals {
   image = "miniroot${replace(var.os_version, ".", "")}.img"
 
   image_full_remote_path = (
-    var.is_snapshot == true
+    length(var.checksum) == 0
       ? "snapshots/${local.image_architecture}/${local.image}"
       : "${var.os_version}/${local.image_architecture}/${local.image}"
   )
