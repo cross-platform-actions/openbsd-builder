@@ -16,8 +16,4 @@ if [ -e "var_files/$OS_VERSION/$ARCHITECTURE.pkrvars.hcl" ]; then
   flags+=("var_files/$OS_VERSION/$ARCHITECTURE.pkrvars.hcl")
 fi
 
-if echo -n "$@" | grep -q "\-var checksum"; then
-  flags+=("-var is_snapshot=true")
-fi
-
 packer build "${flags[@]}" "$@" openbsd.pkr.hcl
