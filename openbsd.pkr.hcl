@@ -109,6 +109,7 @@ variable "readonly_boot_media" {
 locals {
   image_architecture = var.architecture == "x86-64" ? "amd64" : var.architecture
   image = "miniroot${replace(var.os_version, ".", "")}.img"
+  checksum = substr(var.checksum, 0, 7) == "sha256:" ? var.checksum : join(":", ["sha256", var.checksum])
 
   image_full_remote_path = (
     length(var.checksum) == 0
