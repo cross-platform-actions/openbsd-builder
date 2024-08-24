@@ -88,3 +88,76 @@ jobs:
           files: output/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-snapshot:
+    name: Build Snapshot
+    runs-on: ubuntu-latest
+    container: ubuntu:latest
+    timeout-minutes: 60
+    strategy:
+        fail-fast: false
+        matrix:
+          version:
+            - 7.6
+
+          architecture:
+            - x86-64
+            - arm64
+
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install Dependencies
+        run: apt update && apt install curl unzip "qemu-system-$QEMU_ARCHITECTURE" -y
+        env:
+          QEMU_ARCHITECTURE: ${{
+              matrix.architecture == 'x86-64' && 'x86' ||
+              matrix.architecture == 'arm64' && 'aarch64' ||
+              matrix.architecture
+            }}
+
+      - uses: hashicorp/setup-packer@main
+        with:
+          version: "1.7.1"
+
+      - name: Install UEFI
+        if: matrix.architecture == 'x86-64'
+        run: |
+          bash -c "apt update
+          apt install ovmf
+          cp /usr/share/ovmf/OVMF.fd resources/ovmf.fd"
+
+      - name: Download QEMU UEFI
+        if: matrix.architecture == 'arm64'
+        run: curl -o resources/qemu_efi.fd -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd
+
+      # - name: Setup tmate session
+      #   uses: mxschmitt/action-tmate@v3
+
+      - name: Build Image
+        run: |
+          PACKER_LOG=1 ./build.sh \
+            '${{ matrix.version }}' \
+            '${{ matrix.architecture }}' \
+            -var 'checksum=536fda4f519359eebd092900b7ee27986cccb800aee321b3b5d4841d7ce42cd2' \
+            -var 'headless=true' \
+            -var 'readonly_boot_media=false'
+
+      - name: Extract Version
+        id: version
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create_release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          name: OpenBSD ${{ steps.version.outputs.VERSION }}
+          draft: true
+          files: output/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
