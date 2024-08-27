@@ -17,20 +17,21 @@ jobs:
     container: ubuntu:latest
     timeout-minutes: 60
     strategy:
-        fail-fast: false
-        matrix:
-          version:
-            - 6.8
-            - 6.9
-            - 7.1
-            - 7.2
-            - 7.3
-            - 7.4
-            - 7.5
+      fail-fast: false
+      matrix:
+        version:
+          - 6.8
+          - 6.9
+          - 7.1
+          - 7.2
+          - 7.3
+          - 7.4
+          - 7.5
+          - snapshot
 
-          architecture:
-            - x86-64
-            - arm64
+        architecture:
+          - x86-64
+          - arm64
 
     steps:
       - name: Clone Repository
@@ -58,6 +59,7 @@ jobs:
           apt install ovmf
           cp /usr/share/ovmf/OVMF.fd resources/ovmf.fd"
 
+
       - name: Download QEMU UEFI
         if: matrix.architecture == 'arm64'
         run: curl -o resources/qemu_efi.fd -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd
@@ -65,11 +67,43 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
 
+      - name: Get snapshot info
+        id: snapshot_info
+        if: matrix.version == 'snapshot'
+        shell: bash
+        run: |
+          set -x
+
+          if [[ "${{ matrix.architecture }}" == "x86-64" ]]; then
+            arch="amd64"
+          else
+            arch="${{ matrix.architecture }}"
+          fi
+
+          url="https://cdn.openbsd.org/pub/OpenBSD/snapshots/$arch/SHA256"
+          miniroot_line="$(curl "$url" | grep "miniroot")"
+          version="$(echo "$miniroot_line" | awk '{print $2}' | sed 's/[^0-9]//g' | sed 's/\(.\)$/.\1/')"
+          sha="$(echo "$miniroot_line" | awk '{print $NF}')"
+
+          echo "VERSION=$version" >> $GITHUB_OUTPUT
+          echo "SHA=$sha" >> $GITHUB_OUTPUT
+
       - name: Build Image
+        if: matrix.version != 'snapshot'
         run: |
           PACKER_LOG=1 ./build.sh \
             '${{ matrix.version }}' \
             '${{ matrix.architecture }}' \
+            -var 'headless=true' \
+            -var 'readonly_boot_media=false'
+
+      - name: Build Image
+        if: matrix.version == 'snapshot'
+        run: |
+          PACKER_LOG=1 ./build.sh \
+            '${{ steps.snapshot_info.outputs.VERSION }}' \
+            '${{ matrix.architecture }}' \
+            -var 'checksum=${{ steps.snapshot_info.outputs.SHA }}' \
             -var 'headless=true' \
             -var 'readonly_boot_media=false'
 
