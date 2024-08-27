@@ -69,7 +69,7 @@ jobs:
 
       - name: Get snapshot info
         id: snapshot_info
-        if: matrix.version == "snapshot"
+        if: matrix.version == 'snapshot'
         run: |
           if [[ "${{ matrix.architecture }}" == "x86-64" ]]; then
             arch="amd64"
@@ -84,7 +84,7 @@ jobs:
           echo "SHA=$sha" >> $GITHUB_OUTPUT
 
       - name: Build Image
-        if: matrix.version != "snapshot"
+        if: matrix.version != 'snapshot'
         run: |
           PACKER_LOG=1 ./build.sh \
             '${{ matrix.version }}' \
@@ -93,7 +93,7 @@ jobs:
             -var 'readonly_boot_media=false'
 
       - name: Build Image
-        if: matrix.version == "snapshot"
+        if: matrix.version == 'snapshot'
         run: |
           PACKER_LOG=1 ./build.sh \
             '${{ steps.snapshot_info.outputs.VERSION }}' \
