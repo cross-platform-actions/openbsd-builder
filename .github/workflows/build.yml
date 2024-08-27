@@ -19,20 +19,22 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-          version:
-            - tag: 6.8
-            - tag: 6.9
-            - tag: 7.1
-            - tag: 7.2
-            - tag: 7.3
-            - tag: 7.4
-            - tag: 7.5
-            - tag: 7.6
-              checksum: 92fe4343d60a963c1070ebd08f496070493bc9ea9c946b56d5dfb98fe880bb0a
-
-          architecture:
-            - x86-64
-            - arm64
+          - { version: 6.8, architecture: x86-64 }
+          - { version: 6.8, architecture: arm64 }
+          - { version: 6.9, architecture: x86-64 }
+          - { version: 6.9, architecture: arm64 }
+          - { version: 7.1, architecture: x86-64 }
+          - { version: 7.1, architecture: arm64 }
+          - { version: 7.2, architecture: x86-64 }
+          - { version: 7.2, architecture: arm64 }
+          - { version: 7.3, architecture: x86-64 }
+          - { version: 7.3, architecture: arm64 }
+          - { version: 7.4, architecture: x86-64 }
+          - { version: 7.4, architecture: arm64 }
+          - { version: 7.5, architecture: x86-64 }
+          - { version: 7.5, architecture: arm64 }
+          - { version: 7.6, architecture: x86-64, snapshot: true }
+          - { version: 7.6, architecture: arm64, snapshot: true }
 
     steps:
       - name: Clone Repository
@@ -60,6 +62,7 @@ jobs:
           apt install ovmf
           cp /usr/share/ovmf/OVMF.fd resources/ovmf.fd"
 
+
       - name: Download QEMU UEFI
         if: matrix.architecture == 'arm64'
         run: curl -o resources/qemu_efi.fd -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd
@@ -67,22 +70,31 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
 
+      - name: Get latest snapshot checksum
+        id: snapshot_checksum
+        if: matrix.snapshot == true
+        run: |
+          arch="$(if [[ "${{ matrix.architecture }}" == "x86-64" ]]; then echo "amd64"; else echo "${{ matrix.architecture }}"; fi)"
+          url="https://cdn.openbsd.org/pub/OpenBSD/snapshots/$arch/SHA256"
+          img="miniroot$(echo "${{ matrix.version }}" | tr -d ".").img"
+          echo "SHA=$(curl url | grep "$img" | awk '{print $NF}')" >> $GITHUB_OUTPUT
+
       - name: Build Image
-        if: matrix.version.checksum == null
+        if: matrix.snapshot == false
         run: |
           PACKER_LOG=1 ./build.sh \
-            '${{ matrix.version.tag }}' \
+            '${{ matrix.version }}' \
             '${{ matrix.architecture }}' \
             -var 'headless=true' \
             -var 'readonly_boot_media=false'
 
       - name: Build Image
-        if: matrix.version.checksum != null
+        if: matrix.snapshot == true
         run: |
           PACKER_LOG=1 ./build.sh \
-            '${{ matrix.version.tag }}' \
+            '${{ matrix.version }}' \
             '${{ matrix.architecture }}' \
-            -var 'checksum=${{ matrix.version.checksum }}' \
+            -var 'checksum=${{ steps.snapshot_checksum.outputs.SHA }}' \
             -var 'headless=true' \
             -var 'readonly_boot_media=false'
 
