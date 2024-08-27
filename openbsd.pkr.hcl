@@ -122,7 +122,7 @@ locals {
 
   iso_target_extension = "img"
   iso_target_path = "packer_cache"
-  iso_full_target_path = "${local.iso_target_path}/${sha1(var.checksum)}.${local.iso_target_extension}"
+  iso_full_target_path = "${local.iso_target_path}/${sha1(local.checksum)}.${local.iso_target_extension}"
 
   qemu_architecture = var.architecture == "arm64" ? "aarch64" : (
     var.architecture == "x86-64" ? "x86_64" : var.architecture
