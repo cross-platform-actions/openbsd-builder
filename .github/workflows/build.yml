@@ -70,8 +70,9 @@ jobs:
       - name: Get snapshot info
         id: snapshot_info
         if: matrix.version == 'snapshot'
+        shell: bash
         run: |
-          if [ "${{ matrix.architecture }}" -eq "x86-64" ]; then
+          if [[ "${{ matrix.architecture }}" == "x86-64" ]]; then
             arch="amd64"
           else
             arch="${{ matrix.architecture }}"
