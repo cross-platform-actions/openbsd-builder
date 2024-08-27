@@ -112,12 +112,12 @@ locals {
   has_checksum_prefix = substr(var.checksum, 0, 7) == "sha256:"
 
   image_full_remote_path = (
-    has_checksum_prefix
+    local.has_checksum_prefix
       ? "${var.os_version}/${local.image_architecture}/${local.image}"
       : "snapshots/${local.image_architecture}/${local.image}"
   )
 
-  checksum = has_checksum_prefix ? var.checksum : join(":", ["sha256", var.checksum])
+  checksum = local.has_checksum_prefix ? var.checksum : join(":", ["sha256", var.checksum])
   vm_name = "openbsd-${var.os_version}-${var.architecture}.qcow2"
 
   iso_target_extension = "img"
