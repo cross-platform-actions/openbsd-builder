@@ -31,7 +31,7 @@ jobs:
 
         architecture:
           - x86-64
-          - amd64
+          - arm64
 
     steps:
       - name: Clone Repository
@@ -72,15 +72,19 @@ jobs:
         if: matrix.version == 'snapshot'
         shell: bash
         run: |
+          set -x
+
           if [[ "${{ matrix.architecture }}" == "x86-64" ]]; then
             arch="amd64"
           else
             arch="${{ matrix.architecture }}"
           fi
+
           url="https://cdn.openbsd.org/pub/OpenBSD/snapshots/$arch/SHA256"
           miniroot_line="$(curl "$url" | grep "miniroot")"
           version="$(echo "$miniroot_line" | awk '{print $2}' | sed 's/[^0-9]//g' | sed 's/\(.\)$/.\1/')"
           sha="$(echo "$miniroot_line" | awk '{print $NF}')"
+
           echo "VERSION=$version" >> $GITHUB_OUTPUT
           echo "SHA=$sha" >> $GITHUB_OUTPUT
 
