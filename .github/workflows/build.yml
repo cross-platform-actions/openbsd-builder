@@ -17,24 +17,21 @@ jobs:
     container: ubuntu:latest
     timeout-minutes: 60
     strategy:
-        fail-fast: false
-        matrix:
-          - { version: 6.8, architecture: x86-64 }
-          - { version: 6.8, architecture: arm64 }
-          - { version: 6.9, architecture: x86-64 }
-          - { version: 6.9, architecture: arm64 }
-          - { version: 7.1, architecture: x86-64 }
-          - { version: 7.1, architecture: arm64 }
-          - { version: 7.2, architecture: x86-64 }
-          - { version: 7.2, architecture: arm64 }
-          - { version: 7.3, architecture: x86-64 }
-          - { version: 7.3, architecture: arm64 }
-          - { version: 7.4, architecture: x86-64 }
-          - { version: 7.4, architecture: arm64 }
-          - { version: 7.5, architecture: x86-64 }
-          - { version: 7.5, architecture: arm64 }
-          - { version: 7.6, architecture: x86-64, snapshot: true }
-          - { version: 7.6, architecture: arm64, snapshot: true }
+      fail-fast: false
+      matrix:
+        version:
+          - 6.8
+          - 6.9
+          - 7.1
+          - 7.2
+          - 7.3
+          - 7.4
+          - 7.5
+          - snapshot
+
+        architecture:
+          - x86-64
+          - amd64
 
     steps:
       - name: Clone Repository
@@ -70,17 +67,24 @@ jobs:
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
 
-      - name: Get latest snapshot checksum
-        id: snapshot_checksum
-        if: matrix.snapshot == true
+      - name: Get snapshot info
+        id: snapshot_info
+        if: matrix.version == "snapshot"
         run: |
-          arch="$(if [[ "${{ matrix.architecture }}" == "x86-64" ]]; then echo "amd64"; else echo "${{ matrix.architecture }}"; fi)"
+          if [[ "${{ matrix.architecture }}" == "x86-64" ]]; then
+            arch="amd64"
+          else
+            arch="${{ matrix.architecture }}"
+          fi
           url="https://cdn.openbsd.org/pub/OpenBSD/snapshots/$arch/SHA256"
-          img="miniroot$(echo "${{ matrix.version }}" | tr -d ".").img"
-          echo "SHA=$(curl url | grep "$img" | awk '{print $NF}')" >> $GITHUB_OUTPUT
+          miniroot_line="$(curl "$url" | grep "miniroot")"
+          version="$(echo "$miniroot_line" | awk '{print $2}' | sed 's/[^0-9]//g' | sed 's/\(.\)$/.\1/')"
+          sha="$(echo "$miniroot_line" | awk '{print $NF}')"
+          echo "VERSION=$version" >> $GITHUB_OUTPUT
+          echo "SHA=$sha" >> $GITHUB_OUTPUT
 
       - name: Build Image
-        if: matrix.snapshot == false
+        if: matrix.version != "snapshot"
         run: |
           PACKER_LOG=1 ./build.sh \
             '${{ matrix.version }}' \
@@ -89,12 +93,12 @@ jobs:
             -var 'readonly_boot_media=false'
 
       - name: Build Image
-        if: matrix.snapshot == true
+        if: matrix.version == "snapshot"
         run: |
           PACKER_LOG=1 ./build.sh \
-            '${{ matrix.version }}' \
+            '${{ steps.snapshot_info.outputs.VERSION }}' \
             '${{ matrix.architecture }}' \
-            -var 'checksum=${{ steps.snapshot_checksum.outputs.SHA }}' \
+            -var 'checksum=${{ steps.snapshot_info.outputs.SHA }}' \
             -var 'headless=true' \
             -var 'readonly_boot_media=false'
 
