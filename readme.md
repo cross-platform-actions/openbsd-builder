@@ -77,6 +77,15 @@ install location to `resources/ovmf.fd`.
     Where `<version>` and `<architecture>` are the any of the versions or
     architectures available in the above table.
 
+    To target a snapshot, override the `checksum` variable manually by
+    specifying `-var checksum=<checksum>` at the end when invoking the `build.sh`
+    script. You can find the appropriate checksum by looking at the SHA256 file
+    for `miniroot<version>.img` on [an OpenBSD mirror](https://www.openbsd.org/ftp.html).
+
+    ```
+    ./build.sh <version> <architecture> -var checksum=<checksum>
+    ```
+
     On non-macOS platforms the `display` variable needs to be overridden by
     specifying `-var display=gtk` or `-var display=sdl` at the end when invoking
     the `build.sh` script:

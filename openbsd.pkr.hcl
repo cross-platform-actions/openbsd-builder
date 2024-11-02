@@ -109,12 +109,20 @@ variable "readonly_boot_media" {
 locals {
   image_architecture = var.architecture == "x86-64" ? "amd64" : var.architecture
   image = "miniroot${replace(var.os_version, ".", "")}.img"
-  image_full_remote_path = "${var.os_version}/${local.image_architecture}/${local.image}"
+  has_checksum_prefix = substr(var.checksum, 0, 7) == "sha256:"
+
+  image_full_remote_path = (
+    local.has_checksum_prefix
+      ? "${var.os_version}/${local.image_architecture}/${local.image}"
+      : "snapshots/${local.image_architecture}/${local.image}"
+  )
+
+  checksum = local.has_checksum_prefix ? var.checksum : "sha256:${var.checksum}"
   vm_name = "openbsd-${var.os_version}-${var.architecture}.qcow2"
 
   iso_target_extension = "img"
   iso_target_path = "packer_cache"
-  iso_full_target_path = "${local.iso_target_path}/${sha1(var.checksum)}.${local.iso_target_extension}"
+  iso_full_target_path = "${local.iso_target_path}/${sha1(local.checksum)}.${local.iso_target_extension}"
 
   qemu_architecture = var.architecture == "arm64" ? "aarch64" : (
     var.architecture == "x86-64" ? "x86_64" : var.architecture
