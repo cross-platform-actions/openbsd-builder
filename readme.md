@@ -42,6 +42,7 @@ The following architectures and versions are supported:
 | 7.6     | ✓      | ✓     |
 | 7.7     | ✓      | ✓     |
 | 7.8     | ✓      | ✓     |
+| 7.9     | ✓      | ✓     |
 
 ## Building Locally
 
