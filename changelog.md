@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [0.13.0] - 2026-05-23
 ### Added
 - Add support for OpenBSD 7.9
 
@@ -65,7 +67,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Initial release
 
-[Unreleased]: https://github.com/cross-platform-actions/openbsd-builder/compare/v0.12.0...HEAD
+[Unreleased]: https://github.com/cross-platform-actions/openbsd-builder/compare/v0.13.0...HEAD
+
+[0.13.0]: https://github.com/cross-platform-actions/openbsd-builder/compare/v0.12.0...v0.13.0
 
 [0.12.0]: https://github.com/cross-platform-actions/openbsd-builder/compare/v0.11.1...v0.12.0
 
