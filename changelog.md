@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Changed
+- The arm64 images are now built with the EDK II UEFI firmware bundled with QEMU
+    (`edk2-aarch64-code.fd`), instead of a separate Linaro UEFI build. The QEMU
+    machine type for arm64 is now `virt,highmem=off,acpi=off`, which makes the
+    kernel fall back to the device tree instead of hanging during ACPI attach.
+    This removes the dependency on the Linaro release server, which no longer
+    exists
 
 ## [0.13.0] - 2026-05-23
 ### Added

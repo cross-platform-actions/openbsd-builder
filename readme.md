@@ -50,12 +50,21 @@ The following architectures and versions are supported:
 
 ####  [UEFI firmware](https://github.com/tianocore/edk2)
 
-This needs to be located at `resources/ovmf.fd`. Copy the `OVMF.fd` for it's
-install location to `resources/ovmf.fd`.
+For x86-64 this needs to be located at `resources/ovmf.fd`. Copy the `OVMF.fd`
+for it's install location to `resources/ovmf.fd`.
 
 * **Ubuntu** - Install the [`ovmf`](https://packages.ubuntu.com/jammy/ovmf) package.
 * **Fedora** - Install the [`edk2-ovmf`](https://fedora.pkgs.org/34/fedora-x86_64/edk2-ovmf-20200801stable-4.fc34.noarch.rpm.html) package.
 * **macOS** - Copy the `OVMF.fd` file from a Linux machine
+
+For arm64 the `edk2-aarch64-code.fd` firmware bundled with QEMU is used, so no
+separate download is needed. On Debian and Ubuntu it comes in the
+[`qemu-efi-aarch64`](https://packages.ubuntu.com/noble/qemu-efi-aarch64) package
+and needs to be symlinked into QEMU's data directory:
+
+```
+sudo ln -s /usr/share/qemu-efi-aarch64/QEMU_EFI.fd /usr/share/qemu/edk2-aarch64-code.fd
+```
 
 #### Other
 

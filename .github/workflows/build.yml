@@ -58,6 +58,12 @@ jobs:
             python3 \
             "qemu-system-$QEMU_ARCHITECTURE"
 
+          # Debian/Ubuntu ship the EDK II ARM64 firmware in its own package
+          # instead of QEMU's data directory, where `-bios` looks for it.
+          if [ -f /usr/share/qemu-efi-aarch64/QEMU_EFI.fd ]; then
+            sudo ln -s /usr/share/qemu-efi-aarch64/QEMU_EFI.fd /usr/share/qemu/edk2-aarch64-code.fd
+          fi
+
         env:
           QEMU_ARCHITECTURE: ${{ matrix.architecture.qemu }}
 
@@ -72,10 +78,6 @@ jobs:
           sudo apt install ovmf
 
           cp /usr/share/ovmf/OVMF.fd resources/ovmf.fd"
-
-      - name: Download QEMU UEFI
-        if: matrix.architecture.name == 'arm64'
-        run: curl -o resources/qemu_efi.fd -L https://releases.linaro.org/components/kernel/uefi-linaro/latest/release/qemu64/QEMU_EFI.fd
 
       # - name: Setup tmate session
       #   uses: mxschmitt/action-tmate@v3
