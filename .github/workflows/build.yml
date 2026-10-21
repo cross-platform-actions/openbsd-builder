@@ -30,6 +30,7 @@ jobs:
             - 7.7
             - 7.8
             - 7.9
+            - '8.0'
 
           architecture:
             - name: x86-64
